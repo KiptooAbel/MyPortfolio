@@ -19,10 +19,7 @@ const Home = () => {
       <ProjectsSection />
       <SkillsSection/>
       <AboutSection/>
-      <ContactSection/>
-      {/* Additional sections will be added here in the next iteration */}
-      {/* We'll add Projects, Skills, About, Contact sections next */}
-      
+      <ContactSection/>      
     </Layout>
   );
 };

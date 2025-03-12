@@ -10,7 +10,7 @@ const Layout = ({ children, title = 'Your Portfolio' }) => {
       
       <Header />
       
-      <main className="flex-grow pt-16">  {/* Add padding-top to account for fixed header */}
+      <main className="flex-grow ">  {/* Add padding-top to account for fixed header */}
         {children}
       </main>
       
