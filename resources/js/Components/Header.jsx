@@ -48,7 +48,7 @@ const Header = () => {
             {['Home', 'Projects', 'Skills', 'About', 'Contact'].map((item, index) => (
               <Link 
                 key={item}
-                href={item === 'Home' ? '/' : `/#${item.toLowerCase()}`}
+                href={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
                 className={`relative px-2 py-2 text-sm font-medium transition-all duration-200 ${
                   scrolled ? 'text-white hover:text-indigo-300' : 'text-gray-300 hover:text-white'
                 } group`}
@@ -95,7 +95,7 @@ const Header = () => {
             {['Home', 'Projects', 'Skills', 'About', 'Contact'].map((item, index) => (
               <Link
                 key={item}
-                href={item === 'Home' ? '/' : `/#${item.toLowerCase()}`}
+                href={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-gray-800/50"
                 onClick={() => setIsMenuOpen(false)}
               >
