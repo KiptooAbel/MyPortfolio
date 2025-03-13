@@ -5,6 +5,7 @@ use App\Http\Controllers\ProjectController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\ContactController;
 
 Route::get('/', function () {
     return Inertia::render('Home', [
@@ -21,12 +22,20 @@ Route::get('/dashboard', function () {
 
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
 
+// Public routes
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
     
+    Route::get('/contacts', [ContactController::class, 'adminIndex'])->name('contact.index');
+    Route::get('/contacts/{message}', [ContactController::class, 'show'])->name('contact.show');
+    Route::delete('/contacts/{message}', [ContactController::class, 'destroy'])->name('contact.destroy');
+
     Route::get('/project', [ProjectController::class, 'adminIndex'])->name('projects.index');
     Route::get('/project/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/project', [ProjectController::class, 'store'])->name('projects.store');
