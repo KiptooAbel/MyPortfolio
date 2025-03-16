@@ -34,11 +34,11 @@ class ContactController extends Controller
 
         // Optional: Send an email notification
         // Uncomment if you have email configured
-        /*
+
         Mail::to('your-email@example.com')->send(
             new ContactFormSubmission($contactMessage)
         );
-        */
+
 
         return redirect()->back()->with('success', 'Thank you for your message! I will get back to you soon.');
     }
@@ -51,7 +51,7 @@ class ContactController extends Controller
         $messages = ContactMessage::orderBy('created_at', 'desc')
             ->paginate(10);
 
-        return Inertia::render('Admin/Contact/Index', [
+        return Inertia::render('Contact/Index', [
             'messages' => $messages,
         ]);
     }
@@ -66,7 +66,7 @@ class ContactController extends Controller
             $message->update(['read' => true]);
         }
 
-        return Inertia::render('Admin/Contact/Show', [
+        return Inertia::render('Contact/Show', [
             'message' => $message,
         ]);
     }

@@ -37,9 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
     
-    Route::get('/contacts', [ContactController::class, 'adminIndex'])->name('contact.index');
-    Route::get('/contacts/{message}', [ContactController::class, 'show'])->name('contact.show');
-    Route::delete('/contacts/{message}', [ContactController::class, 'destroy'])->name('contact.destroy');
+    Route::get('/contacts', [ContactController::class, 'adminIndex'])->name('admin.contact.index');
+    Route::get('/contacts/{message}', [ContactController::class, 'show'])->name('admin.contact.show');
+    Route::delete('/contacts/{message}', [ContactController::class, 'destroy'])->name('admin.contact.destroy');
 
     Route::get('/project', [ProjectController::class, 'adminIndex'])->name('projects.index');
     Route::get('/project/create', [ProjectController::class, 'create'])->name('projects.create');
