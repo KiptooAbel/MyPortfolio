@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return Inertia::render('Home', [
@@ -18,10 +19,6 @@ Route::get('/', function () {
         'skills' => \App\Models\Skill::getByCategory(), // Add this line to get skills data
     ]);
 });
-
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 // Public routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
@@ -35,7 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-        
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+   
     // Skills CRUD
     Route::get('/skill', [SkillController::class, 'adminIndex'])->name('admin.skills.index');
     Route::get('/skill/create', [SkillController::class, 'create'])->name('admin.skills.create');

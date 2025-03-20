@@ -3,7 +3,7 @@ import { Link, usePage } from '@inertiajs/react';
 import Dropdown from '@/Components/Dropdown';
 import {
     Menu, X, LayoutGrid, Users, FileText, Mail, User,
-    Bell, ChevronRight, Star, Code, Moon, Sun,FolderGit2
+    Bell,LayoutDashboard , ChevronRight, Star, Code, Moon, Sun,FolderGit2
 } from 'lucide-react';
 import { useTheme } from '@/Context/ThemeContext';
 
@@ -46,6 +46,7 @@ function AuthenticatedLayout({ header, children }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const navigationItems = [
+        { name: 'Dashboard', href: route('dashboard'), icon: LayoutDashboard },
         { name: 'Projects', href: route('admin.projects.index'), icon: FolderGit2 },
         { name: 'Skills', href: route('admin.skills.index'), icon: Code },
         { name: 'About', href: route('admin.about.index'), icon: User },
