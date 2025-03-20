@@ -15,14 +15,13 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        'skills' => \App\Models\Skill::getByCategory(), // Add this line to get skills data
     ]);
 });
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
-
 
 // Public routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
@@ -36,6 +35,15 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
+        
+    // Skills CRUD
+    Route::get('/skill', [SkillController::class, 'adminIndex'])->name('admin.skills.index');
+    Route::get('/skill/create', [SkillController::class, 'create'])->name('admin.skills.create');
+    Route::post('/skill', [SkillController::class, 'store'])->name('admin.skills.store');
+    Route::get('/skill/{skill}/edit', [SkillController::class, 'edit'])->name('admin.skills.edit');
+    Route::put('/skill/{skill}', [SkillController::class, 'update'])->name('admin.skills.update');
+    Route::delete('/skill/{skill}', [SkillController::class, 'destroy'])->name('admin.skills.destroy');
+    Route::get('/skill/{skill}', [SkillController::class, 'show'])->name('admin.skills.show');
     
     Route::get('/contacts', [ContactController::class, 'adminIndex'])->name('admin.contact.index');
     Route::get('/contacts/{message}', [ContactController::class, 'show'])->name('admin.contact.show');

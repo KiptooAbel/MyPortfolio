@@ -1,43 +1,41 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { usePage } from '@inertiajs/react';
 
 const SkillsSection = () => {
   const sectionRef = useRef(null);
+  const { skills } = usePage().props;
   
-  const skillCategories = [
-    {
-      title: 'Frontend',
-      icon: 'M12 16.5l4-4h-3v-9h-2v9H8l4 4zm9-13h-6v1.99h6v14.03H3V5.49h6V3.5H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2z',
-      skills: [
-        { name: 'React', level: 90 },
-        { name: 'JavaScript', level: 85 },
-        { name: 'HTML/CSS', level: 90 },
-        { name: 'Tailwind CSS', level: 85 },
-        { name: 'TypeScript', level: 75 }
-      ]
-    },
-    {
-      title: 'Backend',
-      icon: 'M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z',
-      skills: [
-        { name: 'Laravel', level: 85 },
-        { name: 'PHP', level: 80 },
-        { name: 'RESTful APIs', level: 85 },
-        { name: 'MySQL', level: 80 },
-        { name: 'Node.js', level: 70 }
-      ]
-    },
-    {
-      title: 'Tools & Methods',
-      icon: 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4',
-      skills: [
-        { name: 'Git', level: 85 },
-        { name: 'Docker', level: 75 },
-        { name: 'CI/CD', level: 70 },
-        { name: 'Agile/Scrum', level: 80 },
-        { name: 'Testing', level: 75 }
-      ]
-    }
-  ];
+  // Transform skills data from backend into the format needed for the component
+  const processSkillsData = () => {
+    if (!skills) return [];
+    
+    // Create an array of categories with their skills
+    return Object.keys(skills).map(category => {
+      // Define icons based on category name
+      const getCategoryIcon = (categoryName) => {
+        const icons = {
+          'Frontend': 'M12 16.5l4-4h-3v-9h-2v9H8l4 4zm9-13h-6v1.99h6v14.03H3V5.49h6V3.5H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2v-14c0-1.1-.9-2-2-2z',
+          'Backend': 'M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z',
+          'Tools & Methods': 'M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4',
+          // Add more default icons as needed
+        };
+        
+        return icons[categoryName] || 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z';
+      };
+      
+      return {
+        title: category,
+        icon: skills[category][0]?.icon || getCategoryIcon(category),
+        skills: skills[category].map(skill => ({
+          name: skill.name,
+          level: skill.proficiency,
+          description: skill.description
+        }))
+      };
+    });
+  };
+  
+  const skillCategories = processSkillsData();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
