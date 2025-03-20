@@ -34,7 +34,30 @@ const Header = () => {
         <div className="flex justify-between h-20">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center group">
-              <div className="relative">
+              <div className="relative flex items-center">
+                {/* Logo SVG */}
+                <svg 
+                  className="h-10 w-10 mr-2" 
+                  viewBox="0 0 100 100" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#3B82F6" />
+                      <stop offset="100%" stopColor="#4F46E5" />
+                    </linearGradient>
+                    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#60A5FA" />
+                      <stop offset="100%" stopColor="#A855F7" />
+                    </linearGradient>
+                  </defs>
+                  
+                  {/* Geometric Abstract Shape */}
+                  <polygon points="20,70 35,30 50,70 65,70 65,30 80,30 80,70" fill="url(#logoGradient)" />
+                  <circle cx="50" cy="50" r="8" fill="url(#accentGradient)" opacity="0.9" />
+                </svg>
+                
+                {/* Name text */}
                 <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 bg-clip-text text-transparent">
                   Abel Kiptoo
                 </span>

@@ -41,12 +41,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/contacts/{message}', [ContactController::class, 'show'])->name('admin.contact.show');
     Route::delete('/contacts/{message}', [ContactController::class, 'destroy'])->name('admin.contact.destroy');
 
-    Route::get('/project', [ProjectController::class, 'adminIndex'])->name('projects.index');
-    Route::get('/project/create', [ProjectController::class, 'create'])->name('projects.create');
-    Route::post('/project', [ProjectController::class, 'store'])->name('projects.store');
-    Route::get('/project/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
-    Route::put('/project/{project}', [ProjectController::class, 'update'])->name('projects.update');
-    Route::delete('/project/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+    Route::get('/project', [ProjectController::class, 'adminIndex'])->name('admin.projects.index');
+    Route::get('/project/create', [ProjectController::class, 'create'])->name('admin.projects.create');
+    Route::post('/project', [ProjectController::class, 'store'])->name('admin.projects.store');
+    Route::get('/project/{project}/edit', [ProjectController::class, 'edit'])->name('admin.projects.edit');
+    Route::put('/project/{project}', [ProjectController::class, 'update'])->name('admin.projects.update');
+    Route::delete('/project/{project}', [ProjectController::class, 'destroy'])->name('admin.projects.destroy');
+    Route::get('/project/{project}', [ProjectController::class, 'show'])->name('admin.projects.show');
 });
 
 

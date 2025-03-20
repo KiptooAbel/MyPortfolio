@@ -46,9 +46,9 @@ function AuthenticatedLayout({ header, children }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const navigationItems = [
-        { name: 'Projects', href: route('projects.index'), icon: LayoutGrid },
-        { name: 'Skills', href: route('projects.index'), icon: Code },
-        { name: 'About', href: route('projects.index'), icon: User },
+        { name: 'Projects', href: route('admin.projects.index'), icon: LayoutGrid },
+        { name: 'Skills', href: route('admin.projects.index'), icon: Code },
+        { name: 'About', href: route('admin.projects.index'), icon: User },
         { name: 'Contact', href: route('admin.contact.index'), icon: Mail }
     ];
 

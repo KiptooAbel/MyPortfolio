@@ -106,4 +106,13 @@ class ProjectController extends Controller
         return redirect()->route('admin.projects.index')
             ->with('message', 'Project deleted successfully.');
     }
+        /**
+     * For admin section - Display the specified project
+     */
+    public function show(Project $project)
+    {
+        return Inertia::render('Admin/Projects/Show', [
+            'project' => $project,
+        ]);
+    }
 }
