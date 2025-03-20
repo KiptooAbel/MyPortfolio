@@ -56,6 +56,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/project/{project}', [ProjectController::class, 'update'])->name('admin.projects.update');
     Route::delete('/project/{project}', [ProjectController::class, 'destroy'])->name('admin.projects.destroy');
     Route::get('/project/{project}', [ProjectController::class, 'show'])->name('admin.projects.show');
+
+    Route::get('/about-admin', [AboutController::class, 'adminIndex'])->name('admin.about.index');
+    Route::get('/about-admin/create', [AboutController::class, 'create'])->name('admin.about.create');
+    Route::post('/about-admin', [AboutController::class, 'store'])->name('admin.about.store');
+    Route::get('/about-admin/{about}/edit', [AboutController::class, 'edit'])->name('admin.about.edit');
+    Route::put('/about-admin/{about}', [AboutController::class, 'update'])->name('admin.about.update');
+    Route::delete('/about-admin/{about}', [AboutController::class, 'destroy'])->name('admin.about.destroy');
+    Route::get('/about-admin/{about}', [AboutController::class, 'show'])->name('admin.about.show');
 });
 
 

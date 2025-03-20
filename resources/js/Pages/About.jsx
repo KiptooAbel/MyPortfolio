@@ -75,8 +75,8 @@ const CertificationBadge = ({ certification }) => (
   </div>
 );
 
-const About = ({ aboutData }) => {
-  if (!aboutData) {
+const About = ({ about }) => {
+  if (!about) {
     return <div>Loading...</div>;
   }
 
@@ -89,7 +89,9 @@ const About = ({ aboutData }) => {
     testimonials, 
     certifications,
     personal_info = {} 
-  } = aboutData;
+  } = about;
+  
+  // Rest of your component remains the same;
   
   // Ensure all data structures are arrays even if they come in as something else or undefined
   const experiencesArray = Array.isArray(experiences) ? experiences : [];
@@ -115,7 +117,7 @@ const About = ({ aboutData }) => {
               <div className="sticky top-28">
                 <div className="relative rounded-xl overflow-hidden mb-6 border-2 border-indigo-500/30 shadow-lg shadow-indigo-500/10">
                   <img 
-                    src={profile_image || '/api/placeholder/400/400'} 
+                    src={profile_image || '/images/profile.jpg'} 
                     alt="Abel Kiptoo" 
                     className="w-full aspect-square object-cover"
                   />
