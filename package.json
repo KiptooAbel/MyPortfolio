@@ -20,7 +20,7 @@
         "vite": "^5.0"
     },
     "dependencies": {
-        "framer-motion": "^11.9.0",
+        "framer-motion": "^11.18.2",
         "lucide-react": "^0.446.0"
     }
 }

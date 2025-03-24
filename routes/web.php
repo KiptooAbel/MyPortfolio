@@ -20,7 +20,7 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/skills', [SkillController::class, 'index'])->name('skills');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
-
+Route::get('/projects/{project}', [ProjectController::class, 'publicShow'])->name('projects.show');
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

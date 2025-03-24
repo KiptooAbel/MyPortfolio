@@ -1,179 +1,209 @@
-import React, { useState, useEffect } from 'react';
-import { Head } from '@inertiajs/react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Head, Link } from '@inertiajs/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Filter, 
+  Layout as LayoutIcon, 
+  Rocket, 
+  CloudLightning 
+} from 'lucide-react';
 import Layout from '@/Components/Layout';
+
+// Extracted reusable variants for consistent animations
+const animationVariants = {
+  initial: { opacity: 0, y: 50 },
+  animate: { opacity: 1, y: 0 },
+  transition: { 
+    type: "spring", 
+    stiffness: 100,
+    damping: 15
+  }
+};
+
+const ProjectCard = React.memo(({ project, index }) => {
+  return (
+    <motion.div
+      initial={animationVariants.initial}
+      animate={animationVariants.animate}
+      transition={{
+        ...animationVariants.transition,
+        delay: index * 0.1, 
+        duration: 0.5 
+      }}
+      className="group"
+    >
+      <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 hover:border-blue-500/50 hover:shadow-2xl">
+        {/* Optimized Image Rendering */}
+        <div className="h-64 overflow-hidden relative">
+          {project.image ? (
+            <img 
+              src={project.image} 
+              alt={project.title} 
+              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+              <span className="text-4xl font-bold text-gray-500">
+                {project.title.charAt(0)}
+              </span>
+            </div>
+          )}
+          
+          {project.featured && (
+            <div className="absolute top-4 right-4 bg-yellow-500 text-black px-3 py-1 rounded-full text-xs font-bold flex items-center">
+              <Rocket className="w-4 h-4 mr-1" />
+              Featured
+            </div>
+          )}
+        </div>
+
+        {/* Project Details */}
+        <div className="p-6">
+          <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors">
+            {project.title}
+          </h3>
+          
+          <p className="text-gray-400 mb-4 line-clamp-3">
+            {project.description}
+          </p>
+
+          {/* Technologies Optimization */}
+          {project.technologies?.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {project.technologies.slice(0, 3).map((tech, index) => (
+                <span 
+                  key={tech} 
+                  className="px-2 py-1 bg-white/10 text-gray-300 rounded-full text-xs"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex gap-3">
+            <Link 
+              href={`/projects/${project.id}`}
+              className="flex-1 py-2 px-4 bg-white/10 text-white rounded-lg text-center hover:bg-blue-500/20 transition-colors"
+            >
+              View Details
+            </Link>
+            
+            {project.live_url && (
+              <a 
+                href={project.live_url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex-1 py-2 px-4 bg-blue-500 text-white rounded-lg text-center hover:bg-blue-600 transition-colors"
+              >
+                Live Site
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+});
 
 const Projects = ({ projects }) => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [filteredProjects, setFilteredProjects] = useState([]);
   
-  // Extract unique technologies from all projects for filter buttons
-  const allTechnologies = [...new Set(
-    projects.flatMap(project => project.technologies || [])
-  )];
+  // Memoized technology extraction with better performance
+  const allTechnologies = useMemo(() => {
+    const technologies = new Set();
+    projects.forEach(project => {
+      project.technologies?.forEach(tech => technologies.add(tech));
+    });
+    return Array.from(technologies).sort();
+  }, [projects]);
   
-  // Filter projects based on selected technology
-  useEffect(() => {
-    if (activeFilter === 'all') {
-      setFilteredProjects(projects);
-    } else {
-      setFilteredProjects(
-        projects.filter(project => 
-          project.technologies && project.technologies.includes(activeFilter)
-        )
-      );
-    }
+  // Optimized filtering with useCallback
+  const filterProjects = React.useCallback(() => {
+    const filtered = activeFilter === 'all' 
+      ? projects 
+      : projects.filter(p => 
+          p.technologies && p.technologies.includes(activeFilter)
+        );
+    
+    setFilteredProjects(filtered);
   }, [activeFilter, projects]);
+
+  useEffect(() => {
+    filterProjects();
+  }, [filterProjects]);
 
   return (
     <Layout>
-      <Head title="Projects" />
-      
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          {/* Page Header */}
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500 bg-clip-text text-transparent mb-4">
-              My Projects
-            </h1>
-            <p className="max-w-3xl mx-auto text-gray-300 text-lg">
-              Explore my latest work and side projects. Each project represents a unique challenge and learning opportunity.
-            </p>
-          </div>
-          
-          {/* Filter Buttons */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            <button
-              onClick={() => setActiveFilter('all')}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                activeFilter === 'all'
-                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white'
-                  : 'bg-white/10 text-gray-300 hover:bg-white/20'
-              }`}
-            >
-              All Projects
-            </button>
-            
-            {allTechnologies.map(tech => (
-              <button
-                key={tech}
-                onClick={() => setActiveFilter(tech)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  activeFilter === tech
-                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white'
-                    : 'bg-white/10 text-gray-300 hover:bg-white/20'
-                }`}
-              >
-                {tech}
-              </button>
-            ))}
-          </div>
-          
-          {/* Projects Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map(project => (
-              <div 
-                key={project.id} 
-                className="bg-gray-800/50 backdrop-blur-md rounded-xl overflow-hidden border border-gray-700/50 hover:border-indigo-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/10 group"
-              >
-                {/* Project Image */}
-                <div className="h-48 overflow-hidden relative">
-                  {project.image ? (
-                    <img 
-                      src={project.image} 
-                      alt={project.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-900 to-indigo-800 flex items-center justify-center">
-                      <span className="text-xl font-bold text-white/70">{project.title.charAt(0)}</span>
-                    </div>
-                  )}
-                  
-                  {/* Featured Badge */}
-                  {project.featured && (
-                    <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-400 to-orange-500 px-3 py-1 rounded-full text-xs font-medium text-white">
-                      Featured
-                    </div>
-                  )}
-                </div>
-                
-                {/* Project Content */}
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-indigo-400 transition-colors">
-                    {project.title}
-                  </h3>
-                  
-                  <p className="text-gray-400 mb-4 line-clamp-3">
-                    {project.description}
-                  </p>
-                  
-                  {/* Technologies */}
-                  {project.technologies && project.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {project.technologies.map((tech, index) => (
-                        <span 
-                          key={index} 
-                          className="px-2 py-1 text-xs bg-white/10 rounded-full text-white/80"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {/* Action Buttons */}
-                  <div className="flex gap-3">
-                    {project.github_url && (
-                      <a 
-                        href={project.github_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex-1 py-2 px-3 rounded bg-white/10 text-white text-center text-sm hover:bg-white/20 transition-colors duration-200"
-                      >
-                        GitHub
-                      </a>
-                    )}
-                    
-                    {project.live_url && (
-                      <a 
-                        href={project.live_url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex-1 py-2 px-3 rounded bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-center text-sm hover:from-blue-600 hover:to-indigo-700 transition-colors duration-200"
-                      >
-                        Live Demo
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          {/* Empty State */}
-          {filteredProjects.length === 0 && (
-            <div className="text-center py-16">
-              <svg 
-                className="mx-auto h-12 w-12 text-gray-400" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={1.5} 
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" 
-                />
-              </svg>
-              <h3 className="mt-2 text-xl font-medium text-gray-300">No projects found</h3>
-              <p className="mt-1 text-gray-400">
-                {activeFilter === 'all' 
-                  ? "There are no projects available at the moment." 
-                  : `No projects found using ${activeFilter}. Try selecting a different filter.`}
-              </p>
+      <div className="min-h-screen bg-gray-950 text-white">
+        <Head title="Portfolio Showcase" />
+        
+        <div className="container mx-auto px-4 py-16">
+          {/* Hero Section with Accessibility Improvements */}
+          <motion.section 
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center max-w-3xl mx-auto mb-16"
+            aria-labelledby="showcase-title"
+          >
+            <div className="flex justify-center mb-6">
+              <CloudLightning 
+                className="w-16 h-16 text-blue-500" 
+                aria-hidden="true" 
+              />
             </div>
-          )}
+            <h1 
+              id="showcase-title" 
+              className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent"
+            >
+              Digital Craftsmanship
+            </h1>
+
+          </motion.section>
+
+
+
+          {/* Projects Grid with Fallback */}
+          <AnimatePresence>
+            {filteredProjects.length > 0 ? (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                aria-live="polite"
+              >
+                {filteredProjects.map((project, index) => (
+                  <ProjectCard 
+                    key={project.id} 
+                    project={project} 
+                    index={index} 
+                  />
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-16 bg-white/5 rounded-2xl"
+              >
+                <div className="flex justify-center mb-4">
+                  <Filter className="w-16 h-16 text-gray-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  No Projects Found
+                </h3>
+                <p className="text-gray-400">
+                  {activeFilter === 'all' 
+                    ? "No projects are currently available." 
+                    : `No projects found for ${activeFilter}. Try a different filter.`}
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </Layout>

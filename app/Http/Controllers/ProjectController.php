@@ -28,7 +28,7 @@ class ProjectController extends Controller
     public function adminIndex()
     {
         $projects = Project::orderBy('order')->get();
-        
+
         return Inertia::render('Admin/Projects/Index', [
             'projects' => $projects,
         ]);
@@ -51,7 +51,6 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|string|max:255',
-            'github_url' => 'nullable|url|max:255',
             'live_url' => 'nullable|url|max:255',
             'technologies' => 'nullable|array',
             'featured' => 'boolean',
@@ -83,7 +82,6 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|string|max:255',
-            'github_url' => 'nullable|url|max:255',
             'live_url' => 'nullable|url|max:255',
             'technologies' => 'nullable|array',
             'featured' => 'boolean',
@@ -106,7 +104,8 @@ class ProjectController extends Controller
         return redirect()->route('admin.projects.index')
             ->with('message', 'Project deleted successfully.');
     }
-        /**
+
+    /**
      * For admin section - Display the specified project
      */
     public function show(Project $project)
@@ -115,4 +114,14 @@ class ProjectController extends Controller
             'project' => $project,
         ]);
     }
+
+/**
+ * Display a single project for public view
+ */
+public function publicShow(Project $project)
+{
+    return Inertia::render('ProjectDetail', [
+        'project' => $project,
+    ]);
+}
 }
