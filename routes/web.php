@@ -9,16 +9,10 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    return Inertia::render('Home', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-        'skills' => \App\Models\Skill::getByCategory(), // Add this line to get skills data
-    ]);
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
 
 // Public routes
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects');

@@ -1,40 +1,14 @@
 import React, { useEffect, useRef } from 'react';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 const ProjectsSection = () => {
   const sectionRef = useRef(null);
+  const { projects } = usePage().props;
   
-  // Project data
-  const projects = [
-    {
-      id: 1,
-      title: 'Novel E-Commerce Platform',
-      description: 'Online bookstore with personalized recommendations and secure checkout.',
-      technologies: ['React', 'Laravel', 'Stripe'],
-      link: '/projects/novel-ecommerce'
-    },
-    {
-      id: 2,
-      title: 'Medical College Website',
-      description: 'Interactive platform with application system and virtual campus tours.',
-      technologies: ['React', 'Laravel', 'Tailwind'],
-      link: 'thecheranganyhospitalcollegeofhealthsciences.com'
-    },
-    {
-      id: 3,
-      title: 'College Portal System',
-      description: 'Student management system with course registration and grade tracking.',
-      technologies: ['React', 'Laravel', 'Pusher'],
-      link: '/projects/college-portal'
-    },
-    {
-      id: 4,
-      title: 'Dropshipping Platform',
-      description: 'E-commerce solution with automated order fulfillment and supplier integration.',
-      technologies: ['React', 'Node.js', 'MongoDB'],
-      link: '/projects/dropshipping'
-    }
-  ];
+  // Use projects fetched from database, limiting to 4 for display on homepage
+  const featuredProjects = projects ? 
+    projects.filter(project => project.featured).slice(0, 4) : 
+    [];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -89,6 +63,26 @@ const ProjectsSection = () => {
     };
   }, []);
 
+  // Helper function to ensure technologies is always an array
+  const ensureArrayTechnologies = (project) => {
+    // Check if technologies exists and is an array
+    if (project.technologies && Array.isArray(project.technologies)) {
+      return project.technologies;
+    }
+    // If it's a string (possibly JSON), try to parse it
+    if (project.technologies && typeof project.technologies === 'string') {
+      try {
+        const parsed = JSON.parse(project.technologies);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        // If parsing fails, return an empty array
+        return [];
+      }
+    }
+    // Default: return empty array
+    return [];
+  };
+
   return (
     <section 
       id="projects" 
@@ -117,47 +111,78 @@ const ProjectsSection = () => {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {projects.map((project, index) => (
-            <div 
-              key={project.id} 
-              className="project-card group backdrop-blur-md rounded-lg overflow-hidden border border-white/10 hover:border-indigo-500/50 transition-all duration-300"
-            >
-              <div className="h-48 overflow-hidden">
-                <div className="h-full w-full bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center p-4 transition-transform duration-500 group-hover:scale-105">
-                  <span className="text-white text-lg font-bold text-center">{project.title}</span>
+          {featuredProjects.length > 0 ? (
+            featuredProjects.map((project, index) => {
+              const technologies = ensureArrayTechnologies(project);
+              
+              return (
+                <div 
+                  key={project.id} 
+                  className="project-card group backdrop-blur-md rounded-lg overflow-hidden border border-white/10 hover:border-indigo-500/50 transition-all duration-300"
+                >
+                  <div className="h-48 overflow-hidden">
+                    {project.image ? (
+                      <img 
+                        src={project.image} 
+                        alt={project.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 flex items-center justify-center p-4 transition-transform duration-500 group-hover:scale-105">
+                        <span className="text-white text-lg font-bold text-center">{project.title}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-5 bg-gray-900/80">
+                    <h3 className="text-lg font-semibold text-white group-hover:text-indigo-400 transition-colors duration-300">
+                      {project.title}
+                    </h3>
+                    <p className="mt-2 text-sm text-gray-300 line-clamp-2">
+                      {project.description}
+                    </p>
+                    {technologies.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {technologies.map((tech, index) => (
+                          <span 
+                            key={index} 
+                            className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-900/50 text-indigo-300 border border-indigo-800/50"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="mt-4 flex items-center gap-3">
+                      {project.github_url && (
+                        <a
+                          href={project.github_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-medium text-gray-300 hover:text-indigo-300 transition-colors duration-200"
+                        >
+                          GitHub
+                        </a>
+                      )}
+                      <Link
+                        href={`/projects/${project.id}`}
+                        className="text-sm font-medium text-indigo-400 hover:text-indigo-300 inline-flex items-center transition-colors duration-200"
+                      >
+                        View Details
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="p-5 bg-gray-900/80">
-                <h3 className="text-lg font-semibold text-white group-hover:text-indigo-400 transition-colors duration-300">
-                  {project.title}
-                </h3>
-                <p className="mt-2 text-sm text-gray-300">
-                  {project.description}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {project.technologies.map((tech, index) => (
-                    <span 
-                      key={index} 
-                      className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-indigo-900/50 text-indigo-300 border border-indigo-800/50"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-4">
-                  <Link
-                    href={project.link}
-                    className="text-sm font-medium text-indigo-400 hover:text-indigo-300 inline-flex items-center transition-colors duration-200"
-                  >
-                    View Details
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </Link>
-                </div>
-              </div>
+              );
+            })
+          ) : (
+            // Placeholder for when no projects are available
+            <div className="col-span-4 text-center py-12">
+              <p className="text-gray-400">Featured projects will appear here</p>
             </div>
-          ))}
+          )}
         </div>
 
         <div className="mt-16 text-center animate-on-scroll opacity-0 transition-all duration-700 delay-300">

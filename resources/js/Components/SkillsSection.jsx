@@ -23,10 +23,16 @@ const SkillsSection = () => {
         return icons[categoryName] || 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z';
       };
       
+      // Check if skills[category] is an array or object
+      // If it's an object (like a Collection), convert it to an array
+      const categorySkills = Array.isArray(skills[category]) 
+        ? skills[category] 
+        : Object.values(skills[category]);
+      
       return {
         title: category,
-        icon: skills[category][0]?.icon || getCategoryIcon(category),
-        skills: skills[category].map(skill => ({
+        icon: categorySkills[0]?.icon || getCategoryIcon(category),
+        skills: categorySkills.map(skill => ({
           name: skill.name,
           level: skill.proficiency,
           description: skill.description
